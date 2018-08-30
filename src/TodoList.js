@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import TodoItem from './TodoItem'
-import './style.css'
+import axios from 'axios';
+import TodoItem from './TodoItem';
+import './style.css';
 
 class TodoList extends Component {
 
@@ -39,13 +40,25 @@ class TodoList extends Component {
         return this.state.list.map((item, idx)=>{
             return (
                 <TodoItem 
+                    key={item}
                     idx={idx}
-                    key={idx}
                     content={item} 
                     handleItemDelete={this.handleItemDelete}
                 />
             )
         })
+    }
+
+    componentDidMount() {
+        axios.get('/api/todolist')
+            .then((res)=>{
+                this.setState(()=>({
+                    list: [...res.data]
+                }))
+            })
+            .catch(()=>{
+                console.log('ajax失败!');
+            })
     }
 
     handleInputChange(ev){
